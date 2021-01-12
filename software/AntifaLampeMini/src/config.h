@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include "const.h"
 
+// WiFi
+#define WIFI_BEHAVIOR   WIFI_CONFIG_CRED
+#define WIFI_SSID       "Your SSID"
+#define WIFI_PSK        "Your PSK"
+
 // LED output
 #define MAX_BRIGHTNESS  255
 #define BOOT_BRIGHTNESS MAX_BRIGHTNESS

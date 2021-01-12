@@ -7,3 +7,11 @@
 #define LOGLEVEL_ERROR 3
 #define LOGLEVEL_FATAL 4
 #define LOGLEVEL_OFF   5
+
+// WiFi behaviors
+// Just opens an access point
+#define WIFI_AP_ONLY     0
+// Opens an access point for configuration
+#define WIFI_AP_CONFIG   1
+// Connects to a configurated access point
+#define WIFI_CONFIG_CRED 2
