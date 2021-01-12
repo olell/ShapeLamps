@@ -1,0 +1,15 @@
+NAME,VALUE,PART,AMOUNT
+,,,
+IC1,,NCP 1117 ST33T3G,1
+U1,,ESP-WROOM-32,1
+,,,
+R1,10k,Resistor 0603,1
+"R2,R3",12k,Resistor 0603,2
+,,,
+"T1,T2",,BC 818-40 SMD,2
+D1-D90,,LED5050 WS2812B,90
+,,,
+"C91,C92",10µF,"SMD Tantal (3,2x1,6mm)",2
+"C1-C90, C93",100nF,Capacitor 0603,91
+,,,
+PCB,,,
