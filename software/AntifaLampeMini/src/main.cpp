@@ -1,3 +1,5 @@
+#include <SPIFFS.h>
+
 #include "driver.h"
 #include "config.h"
 #include "util.h"
@@ -13,6 +15,12 @@ void setup() {
 
     log_config();
 
+    if(!SPIFFS.begin(true)) {
+        log_fatal("An fatal error occured while mounting SPIFFS. Please reset controller!");
+        halt();
+    }
+    log_debug("Mounted SPIFFS");
+    
     driver_init();
     log_debug("LED driver inited");
     wifi_init();

@@ -17,7 +17,7 @@
 #define SYSTEM_FPS 60
 
 // Logging
-#define LOGLEVEL LOGLEVEL_INFO // DEBUG, INFO, WARN, ERROR, FATAL, OFF
+#define LOGLEVEL LOGLEVEL_DEBUG // DEBUG, INFO, WARN, ERROR, FATAL, OFF
 #define FPS_DEBUG_PRINT_CYCLE 6000 // Print fps every ~xyz milliseconds
 
 // Hardware, values suitable for Rev 1.0

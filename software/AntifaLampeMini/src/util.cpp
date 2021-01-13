@@ -87,3 +87,10 @@ void log_fatal(const char* val, ...) {
         Serial.printf("[%sFATAL%s]   %s%10d%s - %s\r\n", ANSI_MAGENTA, ANSI_RESET, ANSI_CYAN, millis(), ANSI_RESET, log_output_str);
     #endif
 }
+
+
+void halt() {
+    while (1) {
+        delay(100);
+    }
+}

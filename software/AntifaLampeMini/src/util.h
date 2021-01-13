@@ -10,3 +10,5 @@ void log_info(const char* val, ...);
 void log_warn(const char* val, ...);
 void log_error(const char* val, ...);
 void log_fatal(const char* val, ...);
+
+void halt();
