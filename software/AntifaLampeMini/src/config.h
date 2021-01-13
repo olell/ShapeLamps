@@ -5,10 +5,10 @@
 
 // WiFi
 #define WIFI_BEHAVIOR   WIFI_AP_ONLY
-#define WIFI_SSID       "Your SSID"
-#define WIFI_PSK        "Your PSK"
-#define WIFI_AP_SSID    "ShapeLamp0161"
-#define WIFI_AP_PSK     "AFA1312!"
+#define WIFI_SSID       "Your SSID" // Optional, only used in mode "WIFI_CONFIG_CRED"
+#define WIFI_PSK        "Your PSK"  // Optional, only used in mode "WIFI_CONFIG_CRED"
+#define WIFI_AP_SSID    "ShapeLamp0161" // Used in mode "WIFI_AP_ONLY" and "WIFI_AP_CONFIG"
+#define WIFI_AP_PSK     "AFA1312!"      // Used in mode "WIFI_AP_ONLY" and "WIFI_AP_CONFIG"
 
 // LED output
 #define MAX_BRIGHTNESS  255
