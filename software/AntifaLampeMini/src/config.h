@@ -4,11 +4,11 @@
 #include "const.h"
 
 // WiFi
-#define WIFI_BEHAVIOR   WIFI_CONFIG_CRED
+#define WIFI_BEHAVIOR   WIFI_AP_ONLY
 #define WIFI_SSID       "Your SSID"
 #define WIFI_PSK        "Your PSK"
-#define WIFI_AP_SSID    "Your AP Name"
-#define WIFI_AP_PSK     "Your AP Pass"
+#define WIFI_AP_SSID    "ShapeLamp0161"
+#define WIFI_AP_PSK     "AFA1312!"
 
 // LED output
 #define MAX_BRIGHTNESS  255

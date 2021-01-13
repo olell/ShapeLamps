@@ -2,6 +2,7 @@
 #include "config.h"
 #include "util.h"
 #include "animations.h"
+#include "wifi_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -14,6 +15,8 @@ void setup() {
 
     driver_init();
     log_debug("LED driver inited");
+    wifi_init();
+    log_debug("WiFi driver inited");
     log_info("Initialisation done!");
 
     start_animation("rainbow_bars");
@@ -23,8 +26,6 @@ void setup() {
 void loop() {
 
     run_animations();
-
-    // delay(100);
 
     real_fps = tick_fps(SYSTEM_FPS);
     if(millis() - fps_print_last > FPS_DEBUG_PRINT_CYCLE) {
