@@ -10,6 +10,18 @@ void log_config() {
     // dumps configuration to debug log
     log_debug("CONFIGURATION DUMP:");
     log_debug("");
+    log_debug("WIFI:");
+    #if WIFI_BEHAVIOR == WIFI_AP_ONLY
+    log_debug("  WIFI_BEHAVIOR           WIFI_AP_ONLY");
+    #elif WIFI_BEHAVIOR == WIFI_AP_CONFIG
+    log_debug("  WIFI_BEHAVIOR           WIFI_AP_CONFIG");
+    #elif WIFI_BEHAVIOR == WIFI_CONFIG_CRED
+    log_debug("  WIFI_BEHAVIOR           WIFI_CONFIG_CRED");
+    #endif
+    log_debug("  WIFI_SSID               %s", WIFI_SSID);
+    // log_debug("  WIFI_PSK                %s", WIFI_PSK);
+    log_debug("  WIFI_AP_SSID            %s", WIFI_AP_SSID);
+    log_debug("  WIFI_AP_PSK             %s", WIFI_AP_PSK);
     log_debug("LED OUTPUT:");
     log_debug("  MAX_BRIGHTNESS:         %d", MAX_BRIGHTNESS);
     log_debug("  BOOT_BRIGHTNESS:        %d", BOOT_BRIGHTNESS);
