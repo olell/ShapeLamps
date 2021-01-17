@@ -15,3 +15,7 @@
 #define WIFI_AP_CONFIG   1
 // Connects to a configurated access point
 #define WIFI_CONFIG_CRED 2
+
+// Network stuff
+#define DNS_PORT 53
+#define HTTP_PORT 80

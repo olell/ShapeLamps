@@ -5,6 +5,7 @@
 #include "util.h"
 #include "animations.h"
 #include "wifi_driver.h"
+#include "http_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -25,6 +26,8 @@ void setup() {
     log_debug("LED driver inited");
     wifi_init();
     log_debug("WiFi driver inited");
+    http_init();
+    log_debug("Http driver inited");
     log_info("Initialisation done!");
 
     start_animation("rainbow_bars");

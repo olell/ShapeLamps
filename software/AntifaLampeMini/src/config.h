@@ -4,11 +4,13 @@
 #include "const.h"
 
 // WiFi
-#define WIFI_BEHAVIOR   WIFI_AP_ONLY
-#define WIFI_SSID       "Your SSID" // Optional, only used in mode "WIFI_CONFIG_CRED"
-#define WIFI_PSK        "Your PSK"  // Optional, only used in mode "WIFI_CONFIG_CRED"
+#define WIFI_BEHAVIOR   WIFI_CONFIG_CRED
+#define WIFI_SSID       "........" // Optional, only used in mode "WIFI_CONFIG_CRED"
+#define WIFI_PSK        "........"  // Optional, only used in mode "WIFI_CONFIG_CRED"
 #define WIFI_AP_SSID    "ShapeLamp0161" // Used in mode "WIFI_AP_ONLY" and "WIFI_AP_CONFIG"
 #define WIFI_AP_PSK     "AFA1312!"      // Used in mode "WIFI_AP_ONLY" and "WIFI_AP_CONFIG"
+
+#define WIFI_AP_IP      10,0,0,1 // Host IP Addr in AP mode (seperate segments by ',')
 
 // LED output
 #define MAX_BRIGHTNESS  255
