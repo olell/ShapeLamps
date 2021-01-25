@@ -24,8 +24,12 @@ float ms_per_cycle = 0;
 
 char log_output_str[150];
 
-uint8_t tick_fps(uint8_t fps) {
+bool framelimiter_disabled = false;
 
+// Framelimiter
+
+uint8_t tick_fps(uint8_t fps) {
+    if (!framelimiter_disabled) {
     uint8_t real_fps = fps;
 
     current_tick_ms = millis();
@@ -41,9 +45,17 @@ uint8_t tick_fps(uint8_t fps) {
     }
 
     last_tick_ms = millis();
-
     return real_fps;
+    }
+    else return 0;
+}
 
+void disable_frame_limit() {
+    framelimiter_disabled = true;
+}
+    
+void enable_frame_limit() {
+    framelimiter_disabled = false;
 }
 
 // log functions
@@ -88,7 +100,12 @@ void log_fatal(const char* val, ...) {
     #endif
 }
 
+// Time/RTC/NTP
+void init_time() {
+    
+}
 
+// stuffs
 void halt() {
     while (1) {
         delay(100);

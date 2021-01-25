@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>AntifaLampe</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1'>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+
+    <link rel="icon" href="/static/png/logo320x320.png">
+    <link rel="apple-touch-icon" href="/static/png/logo320x320.png">
+    
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/dmode.css'>
+
+    <script src="/static/js/iro.js"></script>
+</head>
+<body>
+    <main role="main">
+        <div class="mt-3 container">
+            <div class="row">
+                <div class="col col-md-8">
+                    <span class="h2">Color & Animation Settings</span>
+                </div>
+                <div class="col col-md-4">
+                    <a href="/wifi_config" class="float-right">Settings</a>
+                </div>
+            </div>
+            <div class="row mt-5 form-group">
+                <!-- Row containing brightness, normalize anim speed etc -->
+                <div class="row">
+                    <div class="slidecontainer">
+                        <label for="basic_brightness">Brightness:</label>
+                        <input class="slider" type="range" id="basic_brightness" min="0" max="255" value="127" oninput="basic_changed();">
+                    </div>
+                </div>
+                <!--<div class="mt-2 row">
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="basic_normalized" onchange="basic_changed();">
+                        <label class="custom-control-label" for="basic_normalized">Normalize Brightness</label>
+                    </div>
+                </div>-->
+                <div class="mt-4 row">
+                    <div class="slidecontainer">
+                        <label for="basic_animation_speed">Animation Speed:</label>
+                        <input class="slider" type="range" id="basic_animation_speed" min="0" max="255" value="127" oninput="basic_changed()">
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <h4>Single Color:</h4>
+                <div id="picker" class="text-center"></div>
+            </div>
+            <div class="row mt-5">
+                <h4>Animations:</h4>
+                <div class="row">
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('off')">Off</button>
+                    </div>
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('rainbow')">Colorfade</button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('rainbow_cycle')">Rainbow Cycle</button>
+                    </div>
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('rainbow_bars')">Rainbow Horizon</button>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('fire')">Fireplace</button>
+                    </div>
+                    <div class="col col-md-6 d-grid gap-2">
+                        <button class="btn btn-primary col-md-12" type="button" onclick="run_animation('matrix')">Matrix</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-md-6 custom-control custom-switch">
+                        <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+                        <input type="checkbox" class="custom-control-input" id="darkSwitch">
+                    </div>
+                    <div class="col col-md-6">
+                        ~<b id="powerdisplay"></b>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+</body>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/dmodesw.js"></script>
+<script>
+
+    var brightness = 255;
+    var normalize = false;
+    var animation_speed = 127;
+
+    var colorpicker = new iro.ColorPicker('#picker', {
+        width: 250,
+        display: "inline-block",
+        borderWidth: 8,
+        borderColor: "#000",
+        layout: [{
+            component: iro.ui.Wheel,
+        }]
+    });
+
+    colorpicker.on('color:change', function(color) {
+        $.post("/set_single_color", {"color": color.hexString});
+    });
+
+    function run_animation (anim_name)  {
+        $.post("/start_animation/", {"name": anim_name}); // Ignoring response
+    }
+
+    function get_basic_values () {
+        $.get("/get_basic", function (data) {
+            brightness = data.brightness;
+            normalize = data.normalize;
+            animation_speed = data.animation_speed;
+            $("#basic_brightness").val(brightness);
+            $("#basic_normalized").prop('checked', normalize);
+            $("#basic_animation_speed").val(animation_speed);
+        });
+    }
+
+    function update_basic_values () {
+        $.post("/set_basic", {
+            "brightness": brightness,
+            "normalize": normalize,
+            "animation_speed": animation_speed
+        });
+    }
+
+    function basic_changed () {
+        brightness = $("#basic_brightness").val();
+        normalize = $("#basic_normalize").prop("checked");
+        animation_speed = $("#basic_animation_speed").val();
+        update_basic_values();
+    }
+
+    function update_power_display() {
+        $.get("/get_power_consumption", function (data) {
+            var power = (data.power_ma / 1000.0) * 5
+            $("#powerdisplay").text(power.toFixed(1) + "W");
+        });
+    }
+
+    $( document ).ready(function () {
+        get_basic_values();
+        update_power_display();
+        setInterval(update_power_display, 3000);
+    });
+
+</script>
+</html>

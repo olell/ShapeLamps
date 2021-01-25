@@ -6,6 +6,7 @@
 #include "animations.h"
 #include "wifi_driver.h"
 #include "http_driver.h"
+#include "ota_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -28,20 +29,27 @@ void setup() {
     log_debug("WiFi driver inited");
     http_init();
     log_debug("Http driver inited");
+    ota_init();
+    log_debug("OTA update driver inited");
+
     log_info("Initialisation done!");
 
-    start_animation("rainbow_bars");
-    
+    start_animation("dev");
+
+    set_normalize(false);
+
 }
 
 void loop() {
 
     run_animations();
 
+    ota_schedule_loop();
+
     real_fps = tick_fps(SYSTEM_FPS);
     if(millis() - fps_print_last > FPS_DEBUG_PRINT_CYCLE) {
         log_debug("Running at %d fps. (SYSTEM_FPS: %d)", real_fps, SYSTEM_FPS);
         fps_print_last = millis();
     }
-
+    
 }

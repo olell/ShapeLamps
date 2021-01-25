@@ -4,9 +4,12 @@
     #include "DNSServer.h"
 #endif
 #include <SPIFFS.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "config.h"
 #include "const.h"
+#include "driver.h"
 
 #include "util.h"
 
@@ -31,6 +34,16 @@ char wifi_psk[64]  = WIFI_PSK;
     DNSServer dns_server;
 #endif
 
+bool set_wifi_credentials(const char* ssid, const char* psk) {
+    if (sizeof(ssid) / sizeof(char) > 64 || sizeof(psk) / sizeof(char) > 64) return false;
+
+    memset(wifi_ssid, 0, 64);
+    memset(wifi_psk, 0, 64);
+
+    strcpy(wifi_ssid, ssid);
+    strcpy(wifi_psk, psk);
+}
+
 bool connect_to_network() {
     // Call this method only if WIFI_BEHAVIOR is "WIFI_CONFIG_CRED" or "WIFI_AP_CONFIG"
     log_info("Starting to connect to network \"%s\"", wifi_ssid);
@@ -38,37 +51,47 @@ bool connect_to_network() {
     WiFi.mode(WIFI_STA);
     WiFi.enableAP(false);
     WiFi.begin(wifi_ssid, wifi_psk);
+    WiFi.setSleep(false);
+    WiFi.setHostname(WIFI_HOSTNAME);
 
     bool connected = false;
 
-    uint8_t prev_status = 0;
     uint8_t current_status = 0;
 
+    long t_start = millis();
+    long t_now = 0;
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
+        delay(10);
 
-        prev_status = current_status;
         current_status = WiFi.status();
-        if (current_status != prev_status) {
-            if (current_status == WL_DISCONNECTED) {
-                // Do nothing, just waiting for connection
-            }
-            else if (current_status == WL_CONNECTED) {
-                log_info("Connection successfully established!");
-                log_info("My IP address is: %s", WiFi.localIP().toString().c_str());
-                connected = true;
-                break;
-            }
-            else if (current_status == WL_NO_SSID_AVAIL) {
-                log_warn("SSID \"%s\" not found...", wifi_ssid);
+        if (current_status == WL_DISCONNECTED) {
+            // Do nothing, just waiting for connection
+            
+            t_now = millis();
+            if (t_now - t_start > WIFI_CONNECT_TIMEOUT) {
+                log_warn("Couldn't connect.. connection timeout reached!");
                 connected = false;
                 break;
             }
-            else if (current_status == WL_CONNECT_FAILED) {
-                log_warn("WiFi connection failed, maybe invalid credentials?");
-                connected = false;
-                break;
-            }
+
+            display_ring_percent((t_now - t_start) / ((float) WIFI_CONNECT_TIMEOUT), 0, 0, 255);
+
+        }
+        else if (current_status == WL_CONNECTED) {
+            log_info("Connection successfully established!");
+            log_info("My IP address is: %s", WiFi.localIP().toString().c_str());
+            connected = true;
+            break;
+        }
+        else if (current_status == WL_NO_SSID_AVAIL) {
+            log_warn("SSID \"%s\" not found...", wifi_ssid);
+            connected = false;
+            break;
+        }
+        else if (current_status == WL_CONNECT_FAILED) {
+            log_warn("WiFi connection failed, maybe invalid credentials?");
+            connected = false;
+            break;
         }
         
     }
@@ -103,6 +126,10 @@ void load_credentials_from_fs() {
     if (!file) {
         log_error("Couldn't open wifi credential file! (/wifi_cred.txt)");
     }
+    
+    memset(wifi_ssid, 0, 64);
+    memset(wifi_psk, 0, 64);
+
     uint8_t read_ptr = 0b00000000;
     char read;
     while(file.available()) {
@@ -143,7 +170,6 @@ void wifi_init() {
 
     log_debug("Begin wifi driver initialisation");
 
-
     #if WIFI_BEHAVIOR == WIFI_AP_ONLY
 
     init_access_point();
@@ -152,10 +178,34 @@ void wifi_init() {
 
     load_credentials_from_fs();
 
+    bool success = connect_to_network();
+    if (! success) {
+        for (int i = 0; i < 3; i++) {
+            set_segment_rgb(0, NUM_LEDS, 30, 0, 0);
+            show_leds();
+            delay(100);
+            set_segment_rgb(0, NUM_LEDS, 0, 0, 0);
+            show_leds();
+            delay(400);
+        }
+        init_access_point();
+    }
+    else {
+        for (int i = 0; i < 3; i++) {
+            set_segment_rgb(0, NUM_LEDS, 0, 30, 0);
+            show_leds();
+            delay(100);
+            set_segment_rgb(0, NUM_LEDS, 0, 0, 0);
+            show_leds();
+            delay(400);
+        }
+    }
+
     #elif WIFI_BEHAVIOR == WIFI_CONFIG_CRED
 
     connect_to_network();
 
     #endif
+
 
 }

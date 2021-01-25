@@ -19,3 +19,13 @@
 // Network stuff
 #define DNS_PORT 53
 #define HTTP_PORT 80
+
+// Math stuff
+#ifndef M_PI
+#define M_PI 3.1415926
+#endif
+
+// Macros
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+#define random_float() (random(0, 1000) / 1000.0)

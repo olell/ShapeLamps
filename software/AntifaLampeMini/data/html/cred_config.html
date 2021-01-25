@@ -4,9 +4,9 @@
     <meta charset='utf-8'>
     <title>AntifaLampe Configure WiFi Credentials</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel='stylesheet' type='text/css' media='screen' href='/css/bootstrap.min.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='/css/main.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='/css/dark-mode.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/dmode.css'>
 </head>
 <body>
     <main>
@@ -16,7 +16,7 @@
         </div>
         <div class="container">
             <div class="row">
-                <form action="/set_credentials" method="GET">
+                <form action="/set_wifi_credentials" method="POST">
                     <div class="form-group">
                         <label for="ssid_input">Name of your WiFi:</label>
                         <input list="networks" class="form-control" name="ssid" id="ssid_input" type="text" placeholder="WiFi SSID">
@@ -43,9 +43,17 @@
 
     </main>
 </body>
-<script src="/js/jquery-3.5.1.slim.min.js"></script>
-<script src="/js/dark-mode-switch.min.js"></script>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/dmodesw.js"></script>
 <script>
+
+    function request_networks() {
+        jQuery.get("/scan_networks", function (data) {
+            if (data.status === "ok") {
+                update_networks_list(data.networks);
+            }
+        })
+    }
 
     function update_networks_list(ssid_list) {
         var html = "";
@@ -55,5 +63,12 @@
             
         $("#networks").html(html);
     }
+
+    $(document).ready(function () {
+
+        request_networks();
+        setInterval(request_networks, 60000); // request new network list every minute
+
+    });
 </script>
 </html>
