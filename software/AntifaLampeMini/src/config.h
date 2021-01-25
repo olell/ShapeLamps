@@ -11,7 +11,7 @@
 #define WIFI_AP_PSK     "AFA1312!"      // Used in mode "WIFI_AP_ONLY" and "WIFI_AP_CONFIG"
 
 #define WIFI_AP_IP      10,0,0,1 // Host IP Addr in AP mode (seperate segments by ',')
-#define WIFI_HOSTNAME   "antifalampe-prototyp"
+#define WIFI_HOSTNAME   "antifalampe"
 
 #define WIFI_CONNECT_TIMEOUT 30000 // 30 seconds seems like a good value
 
