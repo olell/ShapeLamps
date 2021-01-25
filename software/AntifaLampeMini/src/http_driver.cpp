@@ -93,6 +93,10 @@ void view_root(AsyncWebServerRequest *request) {
     request->send(SPIFFS, "/html/index.html", "text/html");
 }
 
+void view_settings(AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/html/settings.html", "text/html");
+}
+
 void view_get_basic(AsyncWebServerRequest *request) {
     String response_json = "{";
     response_json += "\"brightness\": " + String(brightness) + ",";
@@ -184,6 +188,7 @@ void http_init() {
 
     server.on("/", HTTP_GET, view_root);
     // server.on("/index.html", HTTP_GET, view_root);
+    server.on("/settings", HTTP_GET, view_settings);
 
     server.on("/get_basic", HTTP_GET, view_get_basic);
     server.on("/set_basic", HTTP_POST, view_set_basic);

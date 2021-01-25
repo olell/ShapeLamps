@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>AntifaLampe Settings</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/dmode.css'>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h3>Settings</h3> 
+            <a href="/">(Home)</a>
+            <hr>
+        </div>
+        <div class="container">
+            <div class="row">
+                <a class="btn btn-primary col-md-12" href="/wifi_config">WiFi Settings</a>
+            </div>
+            <div class="row mt-3">
+                <a class="btn btn-primary col-md-12" href="/do_ota_update">Update Firmware (Read manual!)</a>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="custom-control custom-switch">
+                    <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+                    <input type="checkbox" class="custom-control-input" id="darkSwitch">
+                </div>
+            </div>
+        </footer>
+
+    </main>
+</body>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/dmodesw.js"></script>
+
+</html>
