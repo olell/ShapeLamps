@@ -12,7 +12,7 @@ const String anim_rainbow_name = "rainbow";
 const String anim_rainbow_cycle_name = "rainbow_cycle";
 const String anim_rainbow_bars_name = "rainbow_bars";
 const String anim_single_color_name = "single_color";
-const String anim_clock_name = "anim_clock";
+const String anim_clock_name = "clock";
 const String anim_fire_name = "fire";
 const String anim_matrix_name = "matrix";
 
@@ -88,9 +88,37 @@ void rainbow_bars_animation() {
 }
 
 void clock_animation() {
-    /*getLocalTime(&timeinfo);
+    struct tm now = get_time();
+    int ring_top_led = 67;
+    int ring_first_led = RING_FIRST_LED;
+    int ring_last_led = RING_LAST_LED;
+    int ring_count = RING_LAST_LED - RING_FIRST_LED;
 
-    Serial.println(timeinfo_boot_millis);*/
+    int hours = 12;
+
+    int hour = now.tm_hour % hours; // 12 hour wraparound
+    int minute = now.tm_min;
+    int second = now.tm_sec;
+
+    int hour_led = ring_top_led + ((float) hour / 12.0) * ring_count;
+    if (hour_led > ring_last_led) hour_led = (hour_led - ring_last_led) + ring_first_led;
+    
+    float min_f = ((float) minute / 60.0);
+    int minute_led = ring_top_led + min_f * ring_count;
+    if (minute_led > ring_last_led) minute_led = (minute_led - ring_last_led) + ring_first_led;
+    
+    float next_min_f = ((float) ((minute + 1) % 60) / 60.0);
+    int minute_next_led = ring_top_led + next_min_f * ring_count;
+    if (minute_next_led > ring_last_led) minute_next_led = (minute_next_led - ring_last_led) + ring_first_led;
+    
+    float sec_f = ((float) second / 60.0);
+
+    set_segment_rgb(0, NUM_LEDS, 0, 0, 0); // clear
+
+    add_led_rgb(hour_led, 255, 0, 0);  
+    add_led_rgb(minute_led, 0, 0, 255 * sec_f);
+    add_led_rgb(minute_next_led, 0, 0, 255 * (1-sec_f));
+
 }
 
 void free_matrix() {
@@ -213,7 +241,7 @@ void matrix_animation () {
 
 }
 
-void dev_animation () {
+void random_fade_animation () {
 
     float h, s, v;
     float p = (rainbow_anim_hue / 1000.0);
@@ -249,6 +277,8 @@ void set_single_color(uint8_t r, uint8_t g, uint8_t b) {
         sc_fadeover = 1; // don't fade
     }
 }
+
+void dev_animation() {}
 
 void start_animation(String name) {
     log_info("Selected animation \"%s\"", name.c_str());

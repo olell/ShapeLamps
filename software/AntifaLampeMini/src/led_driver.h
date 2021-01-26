@@ -9,6 +9,7 @@ void set_normalize(bool val);
 void show_leds();
 
 void set_led_rgb(uint8_t idx, uint8_t r, uint8_t g, uint8_t b);
+void add_led_rgb(uint8_t idx, uint8_t r, uint8_t g, uint8_t b);
 void set_led_hsv(uint8_t idx, uint8_t h, uint8_t s, uint8_t v);
 
 void set_segment_rgb(uint8_t idx0, uint8_t idx1, uint8_t r, uint8_t g, uint8_t b);

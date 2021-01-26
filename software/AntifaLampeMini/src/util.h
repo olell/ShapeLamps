@@ -16,4 +16,7 @@ void log_fatal(const char* val, ...);
 
 void halt();
 
+void init_time();
+struct tm get_time();
+
 String ip_to_string(IPAddress ip);

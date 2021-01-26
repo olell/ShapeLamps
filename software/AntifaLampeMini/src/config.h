@@ -48,5 +48,10 @@ extern const char* firmware_url;
 extern const char* spiffs_url;
 extern const char* server_cert;
 
+// NTP
+#define NTP_SERVER "pool.ntp.org"
+#define NTP_NORMAL_OFFSET 3600
+#define NTP_DST_OFFSET 3600
+
 // config specific functions
 void log_config();

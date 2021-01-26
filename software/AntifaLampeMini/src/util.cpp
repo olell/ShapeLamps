@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <Arduino.h>
 #include <stdarg.h>
+#include "time.h"
 
 #include "config.h"
 #include "const.h"
@@ -25,6 +26,7 @@ float ms_per_cycle = 0;
 char log_output_str[150];
 
 bool framelimiter_disabled = false;
+
 
 // Framelimiter
 
@@ -102,7 +104,15 @@ void log_fatal(const char* val, ...) {
 
 // Time/RTC/NTP
 void init_time() {
-    
+    configTime(NTP_NORMAL_OFFSET, NTP_DST_OFFSET, NTP_SERVER);
+}
+
+struct tm get_time() {
+    struct tm timeinfo;
+    if(!getLocalTime(&timeinfo)) {
+        log_error("Couldn't obtain time!");
+    }
+    return timeinfo;
 }
 
 // stuffs

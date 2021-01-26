@@ -57,6 +57,21 @@ void set_led_rgb(uint8_t idx, uint8_t r, uint8_t g, uint8_t b) {
         leds[idx] = normalize_color(CRGB(r, g, b));
 }
 
+void add_led_rgb(uint8_t idx, uint8_t r, uint8_t g, uint8_t b) {
+    CRGB current_color = leds[idx];
+    CRGB add_color;
+    if (!normalize)
+        add_color = color_brightness(CRGB(r, g, b));
+    else
+        add_color = normalize_color(CRGB(r, g, b));
+
+    current_color.r += add_color.r;
+    current_color.g += add_color.g;
+    current_color.b += add_color.b;
+    
+    leds[idx] = current_color;
+}
+
 void set_led_hsv(uint8_t idx, uint8_t h, uint8_t s, uint8_t v) {
     CRGB rgb_col;
     hsv2rgb_rainbow(CHSV(h, s, v), rgb_col);

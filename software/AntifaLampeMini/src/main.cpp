@@ -27,6 +27,8 @@ void setup() {
     log_debug("LED driver inited");
     wifi_init();
     log_debug("WiFi driver inited");
+    init_time();
+    log_debug("Time inited");
     http_init();
     log_debug("Http driver inited");
     ota_init();
@@ -34,9 +36,11 @@ void setup() {
 
     log_info("Initialisation done!");
 
-    start_animation("dev");
+    start_animation("clock");
 
     set_normalize(false);
+
+    get_time();
 
 }
 
