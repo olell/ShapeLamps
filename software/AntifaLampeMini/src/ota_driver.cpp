@@ -6,7 +6,6 @@
 
 #include "util.h"
 #include "ota_driver.h"
-#include "animations.h"
 #include "driver.h"
 #include "config.h"
 #include "wifi_driver.h"
@@ -154,16 +153,13 @@ bool ota_update() {
     bool success = ota_update_spiffs() & ota_update_firmware();
 
     if (success) {
-        set_single_color(0, 255, 0);
+        set_segment_rgb(0, NUM_LEDS, 0, 255, 0);
     }
     else {
-        set_single_color(255, 0, 0);
+        set_segment_rgb(0, NUM_LEDS, 255, 0, 0);
     }
 
-    animation_speed = 255.0;
     set_brightness(255);
-    start_animation("single_color");
-    run_animations();
     show_leds();
 
     is_ota_running = false;
