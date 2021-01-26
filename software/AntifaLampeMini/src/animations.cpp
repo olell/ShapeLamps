@@ -4,7 +4,7 @@
 
 #include "config.h"
 #include "animations.h"
-#include "driver.h"
+#include "led_driver.h"
 #include "util.h"
 
 const String anim_off_name = "off";
