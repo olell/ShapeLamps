@@ -9,6 +9,7 @@
 #define CLOCK                   6
 #define FIRE_ANIMATION          7
 #define MATRIX_ANIMATION        8
+#define RANDOM_FADE_ANIMATION   9
 
 void start_animation(String name);
 void run_animations();

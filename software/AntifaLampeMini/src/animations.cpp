@@ -15,6 +15,7 @@ const String anim_single_color_name = "single_color";
 const String anim_clock_name = "clock";
 const String anim_fire_name = "fire";
 const String anim_matrix_name = "matrix";
+const String anim_random_fade = "random_fade";
 
 uint8_t running_animation = OFF_ANIMATION;
 
@@ -312,6 +313,9 @@ void start_animation(String name) {
     else if (name == anim_matrix_name) {
         running_animation = MATRIX_ANIMATION;
     }
+    else if (name == anim_random_fade) {
+        running_animation = RANDOM_FADE_ANIMATION;
+    }
     else if (name == "dev") running_animation = 100;
 }
 
@@ -346,6 +350,10 @@ void run_animations() {
 
     if (running_animation == MATRIX_ANIMATION) {
         matrix_animation();
+    }
+
+    if (running_animation == RANDOM_FADE_ANIMATION) {
+        random_fade_animation();
     }
 
     if (running_animation == 100) {
