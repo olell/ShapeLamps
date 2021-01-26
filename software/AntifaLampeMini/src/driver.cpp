@@ -58,10 +58,12 @@ void set_led_rgb(uint8_t idx, uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void set_led_hsv(uint8_t idx, uint8_t h, uint8_t s, uint8_t v) {
+    CRGB rgb_col;
+    hsv2rgb_rainbow(CHSV(h, s, v), rgb_col);
     if (!normalize)
-        leds[idx] = color_brightness(CRGB(CHSV(h, s, v)));
+        leds[idx] = color_brightness(rgb_col);
     else
-        leds[idx] = normalize_color(CRGB(CHSV(h, s, v)));
+        leds[idx] = normalize_color(rgb_col);
 }
 
 void set_segment_rgb(uint8_t idx0, uint8_t idx1, uint8_t r, uint8_t g, uint8_t b) {
