@@ -5,11 +5,11 @@
 #define RAINBOW_CYCLE_ANIMATION 2
 #define SINGLE_COLOR            3
 #define RAINBOW_BARS            4
-// #define AUDIO_VISUAL            5
-#define CLOCK                   6
-#define FIRE_ANIMATION          7
-#define MATRIX_ANIMATION        8
-#define RANDOM_FADE_ANIMATION   9
+#define CLOCK                   5
+#define FIRE_ANIMATION          6
+#define MATRIX_ANIMATION        7
+#define RANDOM_FADE_ANIMATION   8
+#define PLASMA_ANIMATION        9
 
 void start_animation(String name);
 void run_animations();

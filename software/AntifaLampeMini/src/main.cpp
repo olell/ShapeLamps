@@ -36,7 +36,7 @@ void setup() {
 
     log_info("Initialisation done!");
 
-    start_animation("clock");
+    start_animation("dev");
 
     set_normalize(false);
 

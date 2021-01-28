@@ -16,6 +16,7 @@ const String anim_clock_name = "clock";
 const String anim_fire_name = "fire";
 const String anim_matrix_name = "matrix";
 const String anim_random_fade = "random_fade";
+const String anim_plasma_name = "plasma";
 
 uint8_t running_animation = OFF_ANIMATION;
 
@@ -279,7 +280,49 @@ void set_single_color(uint8_t r, uint8_t g, uint8_t b) {
     }
 }
 
-void dev_animation() {}
+float offsetx, offsety;
+
+void plasma_animation() {
+    uint8_t x, y;
+    uint8_t h, s, v;
+    float val, xp, yp;
+
+    for (y = 0; y < LED_GRID_HEIGHT; y ++) {
+        for (x = 0; x < LED_GRID_WIDTH; x ++) {
+            xp = (x + offsetx);
+            yp = (y + offsety);
+            while (xp > LED_GRID_WIDTH) xp -= LED_GRID_WIDTH;
+            while (yp > LED_GRID_HEIGHT) yp -= LED_GRID_HEIGHT;
+
+            val = (
+
+                sin((xp / LED_GRID_WIDTH) * 2 * M_PI / 2) *
+                cos((yp / LED_GRID_WIDTH) * 2 * M_PI / 2)
+
+            );
+
+            if (val < 0) val *= -1;
+            
+            float lp_factor = animation_speed / 255.0;
+            matrix[y][x] = matrix[y][x] * (1 - lp_factor) + val * (lp_factor);
+
+            h = 160 + matrix[y][x] * 65;
+            s = 255;
+
+            set_xy_hsv(x, y, h, s, 255);
+        }
+    }
+
+    offsetx += ((random_float()) - 0.5);
+    offsety += ((random_float()) - 0.5);
+
+    if (offsetx > LED_GRID_WIDTH) offsetx = -LED_GRID_WIDTH;
+    if (offsetx < -LED_GRID_WIDTH) offsetx = LED_GRID_WIDTH;
+    if (offsety > LED_GRID_HEIGHT) offsety = -LED_GRID_HEIGHT;
+    if (offsety < -LED_GRID_HEIGHT) offsety = LED_GRID_HEIGHT;
+}
+
+void dev_animation () {}
 
 void start_animation(String name) {
     log_info("Selected animation \"%s\"", name.c_str());
@@ -315,6 +358,9 @@ void start_animation(String name) {
     }
     else if (name == anim_random_fade) {
         running_animation = RANDOM_FADE_ANIMATION;
+    }
+    else if (name == anim_plasma_name) {
+        running_animation = PLASMA_ANIMATION;
     }
     else if (name == "dev") running_animation = 100;
 }
@@ -354,6 +400,10 @@ void run_animations() {
 
     if (running_animation == RANDOM_FADE_ANIMATION) {
         random_fade_animation();
+    }
+
+    if (running_animation == PLASMA_ANIMATION) {
+        plasma_animation();
     }
 
     if (running_animation == 100) {
