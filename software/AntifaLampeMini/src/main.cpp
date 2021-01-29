@@ -7,6 +7,7 @@
 #include "wifi_driver.h"
 #include "http_driver.h"
 #include "ota_driver.h"
+#include "timer_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -33,6 +34,8 @@ void setup() {
     log_debug("Http driver inited");
     ota_init();
     log_debug("OTA update driver inited");
+    timer_driver_init();
+    log_debug("Timer driver inited");
 
     log_info("Initialisation done!");
 
@@ -49,6 +52,8 @@ void loop() {
     run_animations();
 
     ota_schedule_loop();
+
+    update_timer();
 
     real_fps = tick_fps(SYSTEM_FPS);
     if(millis() - fps_print_last > FPS_DEBUG_PRINT_CYCLE) {

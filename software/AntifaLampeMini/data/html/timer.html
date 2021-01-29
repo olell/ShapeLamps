@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>AntifaLampe Timer</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, minimum-scale=1'>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+
+    <link rel="icon" href="/static/png/logo320x320.png">
+    <link rel="apple-touch-icon" href="/static/png/logo320x320.png">
+    
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/bootstrap.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/main.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/static/css/dmode.css'>
+
+    <script src="/static/js/iro.js"></script>
+</head>
+<body>
+    <main role="main">
+        <div class="mt-3 container">
+            <div class="row">
+                <div class="col col-md-8">
+                    <span class="h2">Timer Settings</span>
+                </div>
+                <div class="col col-md-4">
+                    <a href="/" class="float-right">Home</a>
+                </div>
+            </div>
+            <hr>
+            <div class="row mt-5">
+                <div class="col col-md-12">
+                    <span class="h3">Sleep Timer:</span>
+                </div>
+                <div class="row form-group mt-4">
+                    <div class="input-group">
+                        <label for="st-minutes">Minutes:
+                            <input type="number" id="st-minutes" value=15>
+                        </label>
+                    </div>
+                    <div class="mt-2">
+                        <button class="float-right btn btn-success" onclick="sleep_timer_start();">Start Timer</button>
+                        <button class="float-right btn btn-danger" onclick="sleep_timer_stop();">Stop Timer</button>
+                        <span id="st-status"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col col-md-6 custom-control custom-switch">
+                        <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+                        <input type="checkbox" class="custom-control-input" id="darkSwitch">
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+</body>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/dmodesw.js"></script>
+<script>
+
+    function pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    }
+
+    function sleep_timer_start() {
+        var minutes = $("#st-minutes").val();
+        $.post("/set_sleep_timer", {
+            "minutes": minutes
+        });
+    }
+
+    function sleep_timer_stop() {
+        $.get("/stop_sleep_timer");
+    }
+
+    function update_sleep_timer_status() {
+        $.get("/get_sleep_timer_left", function (data) {
+            var running = data.running;
+            var minutes_left = data.minutes;
+            var seconds_left = data.seconds;
+
+            var status_string = "Timer is ";
+            if (!running) status_string += "not ";
+            status_string += "running.";
+
+            if (running) {
+                status_string += " (Time left: ";
+                status_string += pad(minutes_left, 2) + ":" + pad(seconds_left,2) + ")";
+            }
+
+            $("#st-status").text(status_string);
+        });
+    }
+    $( document ).ready(function () {
+
+        update_sleep_timer_status();
+        // ToDo: Check if this is too much for the ESP
+        setInterval(update_sleep_timer_status, 5000);
+
+    })
+
+</script>
+</html>

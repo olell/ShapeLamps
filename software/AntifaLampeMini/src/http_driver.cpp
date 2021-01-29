@@ -12,6 +12,7 @@
 #include "led_driver.h"
 #include "animations.h"
 #include "ota_driver.h"
+#include "timer_driver.h"
 
 AsyncWebServer server(HTTP_PORT);
 
@@ -169,9 +170,47 @@ void serve_static(AsyncWebServerRequest *request) {
     request->send(SPIFFS, path, mime);
 }
 
+void view_timer(AsyncWebServerRequest *request) {
+    request->send(SPIFFS, "/html/timer.html", "text/html");
+}
+
 void view_do_ota_update(AsyncWebServerRequest *request) {
     schedule_ota();
     request->redirect("/reboot");
+}
+
+//
+void view_set_sleep_timer(AsyncWebServerRequest *request) {
+    if (request->hasParam("minutes", true)) {
+        AsyncWebParameter* minutes_param = request->getParam("minutes", true);
+        int minutes = atoi(minutes_param->value().c_str());
+        start_sleep_timer(minutes);
+    }
+    request->send(200, "text/plain", dummy_response);
+}
+
+void view_get_sleep_timer_left(AsyncWebServerRequest *request) {
+
+    String response_json = "{";
+
+    uint32_t time_left = get_sleeptimer_left_millis();
+    int minutes = (time_left / 60000);
+    int seconds = (time_left / 1000) - (minutes * 60);
+
+    response_json += "\"running\": ";
+    response_json += get_sleeptimer_running() ? "true," : "false,";
+
+    response_json += "\"minutes\": " + (String)minutes + ",";
+    response_json += "\"seconds\": " + (String)seconds + ",";
+    response_json += "\"total_millis\": " + (String)time_left + "}";
+
+    request->send(200, "application/json", response_json);
+
+}
+
+void view_stop_sleep_timer(AsyncWebServerRequest *request) {
+    stop_sleep_timer();
+    request->send(200, "text/plain", dummy_response);
 }
 
 void http_init() {
@@ -200,6 +239,11 @@ void http_init() {
     server.on("/do_reboot", HTTP_GET, view_reboot_do);
 
     server.on("/do_ota_update", HTTP_GET, view_do_ota_update);
+
+    server.on("/timer", HTTP_GET, view_timer);
+    server.on("/set_sleep_timer", HTTP_POST, view_set_sleep_timer);
+    server.on("/get_sleep_timer_left", HTTP_GET, view_get_sleep_timer_left);
+    server.on("/stop_sleep_timer", HTTP_GET, view_stop_sleep_timer);
 
     server.begin();
     log_debug("Started http server");
