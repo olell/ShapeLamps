@@ -152,6 +152,8 @@ bool ota_update() {
     
     bool success = ota_update_spiffs() & ota_update_firmware();
 
+    set_brightness(255);
+   
     if (success) {
         set_segment_rgb(0, NUM_LEDS, 0, 255, 0);
     }
@@ -159,7 +161,6 @@ bool ota_update() {
         set_segment_rgb(0, NUM_LEDS, 255, 0, 0);
     }
 
-    set_brightness(255);
     show_leds();
 
     is_ota_running = false;
