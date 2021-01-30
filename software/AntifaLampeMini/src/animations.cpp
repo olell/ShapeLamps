@@ -6,6 +6,7 @@
 #include "animations.h"
 #include "led_driver.h"
 #include "util.h"
+#include "AsyncUDP.h"
 
 const String anim_off_name = "off";
 const String anim_rainbow_name = "rainbow";
@@ -17,6 +18,7 @@ const String anim_fire_name = "fire";
 const String anim_matrix_name = "matrix";
 const String anim_random_fade = "random_fade";
 const String anim_plasma_name = "plasma";
+const String anim_external_name = "ext";
 
 uint8_t running_animation = OFF_ANIMATION;
 
@@ -322,7 +324,9 @@ void plasma_animation() {
     if (offsety < -LED_GRID_HEIGHT) offsety = LED_GRID_HEIGHT;
 }
 
-void dev_animation () {}
+void dev_animation () {
+
+}
 
 void start_animation(String name) {
     log_info("Selected animation \"%s\"", name.c_str());
@@ -361,6 +365,9 @@ void start_animation(String name) {
     }
     else if (name == anim_plasma_name) {
         running_animation = PLASMA_ANIMATION;
+    }
+    else if (name == anim_external_name) {
+        running_animation = EXTERNAL_ANIMATION;
     }
     else if (name == "dev") running_animation = 100;
 }
@@ -406,10 +413,16 @@ void run_animations() {
         plasma_animation();
     }
 
+    if (running_animation == EXTERNAL_ANIMATION) {
+        // just do nothing
+    }
+
     if (running_animation == 100) {
         dev_animation();
     }
 
-    show_leds();
+    // show leds only when internal animations are running
+    if (running_animation != EXTERNAL_ANIMATION)
+        show_leds();
 
 }

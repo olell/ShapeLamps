@@ -8,6 +8,7 @@
 #include "http_driver.h"
 #include "ota_driver.h"
 #include "timer_driver.h"
+#include "udp_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -36,6 +37,8 @@ void setup() {
     log_debug("OTA update driver inited");
     timer_driver_init();
     log_debug("Timer driver inited");
+    udp_init();
+    log_debug("UDP driver inited");
 
     log_info("Initialisation done!");
 

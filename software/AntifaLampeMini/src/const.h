@@ -19,6 +19,7 @@
 // Network stuff
 #define DNS_PORT 53
 #define HTTP_PORT 80
+#define UDP_PORT 1234
 
 // Math stuff
 #ifndef M_PI
