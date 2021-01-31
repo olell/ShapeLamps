@@ -44,9 +44,10 @@ CRGB normalize_color(CRGB color) {
 }
 
 CRGB color_brightness(CRGB color) {
-    color.r *= (brightness / 255.0);
-    color.g *= (brightness / 255.0);
-    color.b *= (brightness / 255.0);
+    double br = gamma8[brightness];
+    color.r *= br;
+    color.g *= br;
+    color.b *= br;
     return color;
 }
 
