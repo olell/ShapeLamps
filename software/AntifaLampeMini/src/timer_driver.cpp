@@ -6,14 +6,52 @@
 #include "led_driver.h"
 #include "animations.h"
 
-int sleep_timer_set_time = 0;
-int sleep_timer_dest_time = 0;
+unsigned long sleep_timer_set_time = 0;
+unsigned long sleep_timer_dest_time = 0;
 bool sleep_timer_enabled = false;
 uint8_t sleep_timer_set_brightness = 0;
 
+unsigned long wake_timer_set_time = 0;
+unsigned long wake_timer_dest_time = 0;
+bool wake_timer_enabled = false;
+
+int wake_timer_minutes = 0;
+struct tm wake_timer_start_time;
 
 void timer_driver_init() {
     sleep_timer_enabled = false;
+}
+
+void start_wake_timer(struct tm start_time, int minutes) {
+    wake_timer_start_time = start_time;
+    wake_timer_minutes = minutes;
+
+    wake_timer_enabled = true;
+}
+
+void stop_wake_timer() {
+    wake_timer_set_time = 0;
+    wake_timer_enabled = false;
+}
+
+void update_wake_timer() {
+    if (wake_timer_set_time == 0) {
+        struct tm now = get_time();
+        if (now.tm_hour == wake_timer_start_time.tm_hour && now.tm_min == wake_timer_start_time.tm_min) {
+            wake_timer_set_time = millis();
+            wake_timer_dest_time = wake_timer_set_time + (60000 * wake_timer_minutes);
+        }
+    }
+    else {
+        unsigned long now = millis();
+        if (now <= wake_timer_dest_time) {
+            uint8_t new_brightness = (1 - ((wake_timer_dest_time - now) / (float)(wake_timer_dest_time - wake_timer_set_time))) * 255;
+            set_brightness(new_brightness);
+        }
+        else {
+            stop_wake_timer();
+        }
+    }
 }
 
 void start_sleep_timer(int minutes) {
@@ -22,7 +60,7 @@ void start_sleep_timer(int minutes) {
     
     sleep_timer_enabled = true;
     sleep_timer_set_time = millis();
-    sleep_timer_dest_time = sleep_timer_set_time + (60 * 1000 * minutes);
+    sleep_timer_dest_time = sleep_timer_set_time + (60000 * minutes);
     sleep_timer_set_brightness = brightness;
 
 }
@@ -57,4 +95,6 @@ bool get_sleeptimer_running() {
 void update_timer() {
     if(sleep_timer_enabled)
         update_sleep_timer();
+    if(wake_timer_enabled)
+        update_wake_timer();
 }
