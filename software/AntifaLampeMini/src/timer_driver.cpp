@@ -54,6 +54,18 @@ void update_wake_timer() {
     }
 }
 
+bool get_wake_timer_enabled() {
+    return wake_timer_enabled;
+}
+
+struct tm get_wake_timer_start_time() {
+    return wake_timer_start_time;
+}
+
+int get_wake_timer_minutes() {
+    return wake_timer_minutes;
+}
+
 void start_sleep_timer(int minutes) {
 
     // ToDo: Maybe a rtc based approach is better?

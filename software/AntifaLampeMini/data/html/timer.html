@@ -12,7 +12,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='/static/css/bootstrap.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='/static/css/main.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='/static/css/dmode.css'>
-
+    
     <script src="/static/js/iro.js"></script>
 </head>
 <body>
@@ -32,15 +32,91 @@
                     <span class="h3">Sleep Timer:</span>
                 </div>
                 <div class="row form-group mt-4">
-                    <div class="input-group">
-                        <label for="st-minutes">Minutes:
-                            <input type="number" id="st-minutes" value=15>
-                        </label>
+                    <div class="col col-md-12">
+                        <div class="col col-md-2 d-inline-block">Duration:</div>
+                        <div class="col col-md-8 d-inline-block"><input type="number" class="form-control" id="st-minutes" value=15></div>
                     </div>
-                    <div class="mt-2">
-                        <button class="float-right btn btn-success" onclick="sleep_timer_start();">Start Timer</button>
-                        <button class="float-right btn btn-danger" onclick="sleep_timer_stop();">Stop Timer</button>
-                        <span id="st-status"></span>
+                    <div class="col col-md-12 mt-2">
+                        <div class="col col-md-2 d-inline-block">
+                            <button class="float-right btn btn-success" onclick="sleep_timer_start();">Start Timer</button>
+                        </div>
+                        <div class="col col-md-2 d-inline-block">
+                            <button class="float-right btn btn-danger" onclick="sleep_timer_stop();">Stop Timer</button>
+                        </div>
+                        <div class="col col-md-6 d-inline-block">
+                            <span id="st-status"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col col-md-12">
+                    <span class="h3">Wake Timer:</span>
+                </div>
+                <div class="row form-group mt-4">
+                    <div class="col-md-12">
+                        <div class="col col-md-2 d-inline-block">
+                            Time: 
+                        </div>
+                        <div class="col col-md-4 d-inline-block">
+                            <select id="wt-hour" class="form-control">
+                                <option value="0"> 0 </option>
+                                <option value="1"> 1 </option>
+                                <option value="2"> 2 </option>
+                                <option value="3"> 3 </option>
+                                <option value="4"> 4 </option>
+                                <option value="5"> 5 </option>
+                                <option value="6"> 6 </option>
+                                <option value="7"> 7 </option>
+                                <option value="8"> 8 </option>
+                                <option value="9"> 9 </option>
+                                <option value="10"> 10 </option>
+                                <option value="11"> 11 </option>
+                                <option value="12"> 12 </option>
+                                <option value="13"> 13 </option>
+                                <option value="14"> 14 </option>
+                                <option value="15"> 15 </option>
+                                <option value="16"> 16 </option>
+                                <option value="17"> 17 </option>
+                                <option value="18"> 18 </option>
+                                <option value="19"> 19 </option>
+                                <option value="20"> 20 </option>
+                                <option value="21"> 21 </option>
+                                <option value="22"> 22 </option>
+                                <option value="23"> 23 </option>
+                            </select>
+                        </div>
+                        <div class="col col-md-4 d-inline-block">
+                            <select id="wt-minute" class="form-control">
+                                <option value="0">  0 </option>
+                                <option value="5">  5 </option>
+                                <option value="10"> 10 </option>
+                                <option value="15"> 15 </option>
+                                <option value="20"> 20 </option>
+                                <option value="25"> 25 </option>
+                                <option value="30"> 30 </option>
+                                <option value="35"> 35 </option>
+                                <option value="40"> 40 </option>
+                                <option value="45"> 45 </option>
+                                <option value="50"> 50 </option>
+                                <option value="55"> 55 </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <div class="col col-md-2 d-inline-block">Duration:</div>
+                        <div class="col col-md-8 d-inline-block"><input type="number" class="form-control" id="wt-duration" value=15></div>
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <div class="col col-md-2 d-inline-block">
+                            <button class="float-right btn btn-success" onclick="wake_timer_start();">Start Timer</button>
+                        </div>
+                        <div class="col col-md-2 d-inline-block">
+                            <button class="float-right btn btn-danger" onclick="wake_timer_stop();">Stop Timer</button>
+                        </div>
+                        <div class="col col-md-6 d-inline-block">
+                            <span id="wt-status"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,11 +137,11 @@
 <script src="/static/js/jquery.js"></script>
 <script src="/static/js/dmodesw.js"></script>
 <script>
-
+    
     function pad(n, width, z) {
-    z = z || '0';
-    n = n + '';
-    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
     }
 
     function sleep_timer_start() {
@@ -97,11 +173,52 @@
             $("#st-status").text(status_string);
         });
     }
+
+    function wake_timer_start() {
+        var duration = $("#wt-duration").val();
+        var minute = $("#wt-minute").val();
+        var hour = $("#wt-hour").val();
+
+        $.post("/enable_wake_timer", {
+            "duration": duration,
+            "hour": hour,
+            "minute": minute
+        });
+
+    }
+
+    function wake_timer_stop() {
+        $.get("/stop_wake_timer");
+    }
+
+    function update_wake_timer_status() {
+        $.get("/get_wake_timer_status", function (data) {
+            var enabled = data.enabled;
+            var minute = data.minute;
+            var hour = data.hour;
+            var duration = data.duration;
+
+            var status_string = "Timer is ";
+            if (!enabled) status_string += "not ";
+            status_string += "enabled.";
+
+            if (enabled) {
+                status_string += "(Set at ";
+                status_string += pad(hour, 2) + ":" + pad(minute,2) + " for " + duration + " minutes.)";
+            }
+
+            $("#wt-status").text(status_string);
+        });
+    }
+
     $( document ).ready(function () {
 
         update_sleep_timer_status();
+        update_wake_timer_status();
+
         // ToDo: Check if this is too much for the ESP
         setInterval(update_sleep_timer_status, 5000);
+        setInterval(update_wake_timer_status, 5000);
 
     })
 

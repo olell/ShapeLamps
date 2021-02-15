@@ -213,6 +213,48 @@ void view_stop_sleep_timer(AsyncWebServerRequest *request) {
     request->send(200, "text/plain", dummy_response);
 }
 
+void view_enable_wake_timer(AsyncWebServerRequest *request) {
+    bool has_all_params = request->hasParam("duration", true);
+    has_all_params &= request->hasParam("minute", true);
+    has_all_params &= request->hasParam("hour", true);
+
+    if (has_all_params) {
+        AsyncWebParameter* minutes_param = request->getParam("minute", true);
+        int minute = atoi(minutes_param->value().c_str());
+        AsyncWebParameter* duration_param = request->getParam("duration", true);
+        int duration = atoi(duration_param->value().c_str());
+        AsyncWebParameter* hour_param = request->getParam("hour", true);
+        int hour = atoi(hour_param->value().c_str());
+
+        struct tm start_time;
+        start_time.tm_hour = hour;
+        start_time.tm_min = minute;
+
+        start_wake_timer(start_time, duration);
+
+    }
+}
+
+void view_disable_wake_timer(AsyncWebServerRequest *request) {
+    stop_wake_timer();
+    request->send(200, "text/plain", dummy_response);
+}
+void view_get_wake_timer_status(AsyncWebServerRequest *request) {
+
+    String response_json = "{";
+
+    response_json += "\"enabled\": ";
+    response_json += get_wake_timer_enabled() ? "true," : "false,";
+
+    struct tm start_time = get_wake_timer_start_time();
+
+    response_json += "\"duration\": " + (String)get_wake_timer_minutes() + ",";
+    response_json += "\"hour\": " + (String)start_time.tm_hour + ",";
+    response_json += "\"minute\": " + (String)start_time.tm_min + "}";
+
+    request->send(200, "application/json", response_json);
+
+}
 void http_init() {
     log_debug("Starting to init the http driver");
 
@@ -241,9 +283,14 @@ void http_init() {
     server.on("/do_ota_update", HTTP_GET, view_do_ota_update);
 
     server.on("/timer", HTTP_GET, view_timer);
+
     server.on("/set_sleep_timer", HTTP_POST, view_set_sleep_timer);
     server.on("/get_sleep_timer_left", HTTP_GET, view_get_sleep_timer_left);
     server.on("/stop_sleep_timer", HTTP_GET, view_stop_sleep_timer);
+
+    server.on("/enable_wake_timer", HTTP_POST, view_enable_wake_timer);
+    server.on("/disable_wake_timer", HTTP_GET, view_disable_wake_timer);
+    server.on("/get_wake_timer_status", HTTP_GET, view_get_wake_timer_status);
 
     server.begin();
     log_debug("Started http server");
