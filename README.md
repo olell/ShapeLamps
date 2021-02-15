@@ -6,6 +6,7 @@
 - [x] Easy to use webinterface
 - [x] Fancy Animations
 - [x] Sleeptimer
+- [x] Waketimer
 - [x] Theoretically compatible with other hardware
 
 ## Renderings
