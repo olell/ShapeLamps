@@ -108,6 +108,12 @@
                         <div class="col col-md-8 d-inline-block"><input type="number" class="form-control" id="wt-duration" value=15></div>
                     </div>
                     <div class="col-md-12 mt-2">
+                        <input class="form-check-input" type="checkbox" value="" id="wt-tones" checked>
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Enable Alarm Tones
+                        </label>
+                    </div>
+                    <div class="col-md-12 mt-2">
                         <div class="col col-md-2 d-inline-block">
                             <button class="float-right btn btn-success" onclick="wake_timer_start();">Start Timer</button>
                         </div>
@@ -117,6 +123,9 @@
                         <div class="col col-md-6 d-inline-block">
                             <span id="wt-status"></span>
                         </div>
+                    </div>
+                    <div class="col col-md-12 mt-2">
+                        <button class="float-right btn btn-danger" onclick="disable_alarm();">Disable Alarm!</button>
                     </div>
                 </div>
             </div>
@@ -142,6 +151,10 @@
         z = z || '0';
         n = n + '';
         return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    }
+
+    function disable_alarm() {
+        $.get("/disable_alarm");
     }
 
     function sleep_timer_start() {
@@ -178,11 +191,15 @@
         var duration = $("#wt-duration").val();
         var minute = $("#wt-minute").val();
         var hour = $("#wt-hour").val();
+        var tones = $("#wt-tones").prop("checked");
+
+        console.log(tones);
 
         $.post("/enable_wake_timer", {
             "duration": duration,
             "hour": hour,
-            "minute": minute
+            "minute": minute,
+            "tones": tones
         });
 
     }

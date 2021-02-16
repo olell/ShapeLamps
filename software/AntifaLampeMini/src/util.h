@@ -16,6 +16,8 @@ void log_fatal(const char* val, ...);
 
 void halt();
 
+void factory_reset();
+
 void init_time();
 struct tm get_time();
 

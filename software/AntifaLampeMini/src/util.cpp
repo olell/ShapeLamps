@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "const.h"
+#include "wifi_driver.h"
 
 const char* ANSI_BLACK   = "\u001b[30m";
 const char* ANSI_RED     = "\u001b[31m";
@@ -120,4 +121,10 @@ void halt() {
     while (1) {
         delay(100);
     }
+}
+
+void factory_reset() {
+    // Reset wifi credentials
+    set_wifi_credentials("Your Network", "Your PSK");
+    write_credentials_to_fs();
 }

@@ -9,6 +9,7 @@
 #include "ota_driver.h"
 #include "timer_driver.h"
 #include "udp_driver.h"
+#include "sound_driver.h"
 
 int fps_print_last = millis();
 uint8_t real_fps = 0;
@@ -39,6 +40,7 @@ void setup() {
     log_debug("Timer driver inited");
     udp_init();
     log_debug("UDP driver inited");
+    sound_driver_init();
 
     log_info("Initialisation done!");
 
@@ -47,6 +49,8 @@ void setup() {
     set_normalize(false);
 
     get_time();
+
+    //beep(50);
 
 }
 
@@ -57,6 +61,8 @@ void loop() {
     ota_schedule_loop();
 
     update_timer();
+
+    update_alarm();
 
     real_fps = tick_fps(SYSTEM_FPS);
     if(millis() - fps_print_last > FPS_DEBUG_PRINT_CYCLE) {

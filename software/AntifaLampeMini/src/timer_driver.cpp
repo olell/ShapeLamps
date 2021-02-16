@@ -5,6 +5,7 @@
 #include "util.h"
 #include "led_driver.h"
 #include "animations.h"
+#include "sound_driver.h"
 
 unsigned long sleep_timer_set_time = 0;
 unsigned long sleep_timer_dest_time = 0;
@@ -14,6 +15,8 @@ uint8_t sleep_timer_set_brightness = 0;
 unsigned long wake_timer_set_time = 0;
 unsigned long wake_timer_dest_time = 0;
 bool wake_timer_enabled = false;
+bool wake_beep_enabled = true;
+unsigned long wake_next_beep = 0;
 
 int wake_timer_minutes = 0;
 struct tm wake_timer_start_time;
@@ -22,9 +25,11 @@ void timer_driver_init() {
     sleep_timer_enabled = false;
 }
 
-void start_wake_timer(struct tm start_time, int minutes) {
+void start_wake_timer(struct tm start_time, int minutes, bool tones) {
     wake_timer_start_time = start_time;
     wake_timer_minutes = minutes;
+
+    wake_beep_enabled = tones;
 
     wake_timer_enabled = true;
 }
@@ -40,15 +45,24 @@ void update_wake_timer() {
         if (now.tm_hour == wake_timer_start_time.tm_hour && now.tm_min == wake_timer_start_time.tm_min) {
             wake_timer_set_time = millis();
             wake_timer_dest_time = wake_timer_set_time + (60000 * wake_timer_minutes);
+            if (wake_beep_enabled) beep(150);
+            wake_next_beep = millis() + 60000;
         }
     }
     else {
         unsigned long now = millis();
+        if (now > wake_next_beep && wake_beep_enabled) {
+            beep(150);
+            wake_next_beep += 60000;
+        }
         if (now <= wake_timer_dest_time) {
             uint8_t new_brightness = (1 - ((wake_timer_dest_time - now) / (float)(wake_timer_dest_time - wake_timer_set_time))) * 255;
             set_brightness(new_brightness);
         }
         else {
+            if(wake_beep_enabled) {
+                enable_alarm();
+            }
             stop_wake_timer();
         }
     }

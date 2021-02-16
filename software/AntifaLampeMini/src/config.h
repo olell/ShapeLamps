@@ -29,6 +29,9 @@
 #define LED_PIN 4
 #define NUM_LEDS 90
 
+#define SPEAKER_PIN 25
+#define ENABLE_SOUND // Comment this line to disable sound output
+
 #define BIG_FLAG_FIRST_LED  0
 #define BIG_FLAG_LAST_LED  30
 #define SMALL_FLAG_FIRST_LED   31

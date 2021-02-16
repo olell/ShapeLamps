@@ -13,6 +13,7 @@
 #include "animations.h"
 #include "ota_driver.h"
 #include "timer_driver.h"
+#include "sound_driver.h"
 
 AsyncWebServer server(HTTP_PORT);
 
@@ -217,6 +218,7 @@ void view_enable_wake_timer(AsyncWebServerRequest *request) {
     bool has_all_params = request->hasParam("duration", true);
     has_all_params &= request->hasParam("minute", true);
     has_all_params &= request->hasParam("hour", true);
+    has_all_params &= request->hasParam("tones", true);
 
     if (has_all_params) {
         AsyncWebParameter* minutes_param = request->getParam("minute", true);
@@ -225,12 +227,14 @@ void view_enable_wake_timer(AsyncWebServerRequest *request) {
         int duration = atoi(duration_param->value().c_str());
         AsyncWebParameter* hour_param = request->getParam("hour", true);
         int hour = atoi(hour_param->value().c_str());
+        AsyncWebParameter* tones_param = request->getParam("tones", true);
+        bool tones = tones_param->value() == "true";
 
         struct tm start_time;
         start_time.tm_hour = hour;
         start_time.tm_min = minute;
 
-        start_wake_timer(start_time, duration);
+        start_wake_timer(start_time, duration, tones);
 
     }
 }
@@ -255,6 +259,18 @@ void view_get_wake_timer_status(AsyncWebServerRequest *request) {
     request->send(200, "application/json", response_json);
 
 }
+
+void view_disable_alarm(AsyncWebServerRequest *request) {
+    disable_alarm();
+    request->send(200, "text/plain", dummy_response);
+}
+
+void view_factory_reset(AsyncWebServerRequest *request) {
+    factory_reset();
+    request->redirect("/");
+    ESP.restart();
+}
+
 void http_init() {
     log_debug("Starting to init the http driver");
 
@@ -291,6 +307,10 @@ void http_init() {
     server.on("/enable_wake_timer", HTTP_POST, view_enable_wake_timer);
     server.on("/disable_wake_timer", HTTP_GET, view_disable_wake_timer);
     server.on("/get_wake_timer_status", HTTP_GET, view_get_wake_timer_status);
+
+    server.on("/disable_alarm", HTTP_GET, view_disable_alarm);
+
+    server.on("/factory_reset", HTTP_GET, view_factory_reset);
 
     server.begin();
     log_debug("Started http server");
