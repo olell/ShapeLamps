@@ -120,8 +120,8 @@ void clock_animation() {
     set_segment_rgb(0, NUM_LEDS, 0, 0, 0); // clear
 
     add_led_rgb(hour_led, 255, 0, 0);  
-    add_led_rgb(minute_led, 0, 0, 255 * sec_f);
-    add_led_rgb(minute_next_led, 0, 0, 255 * (1-sec_f));
+    add_led_rgb(minute_led, 0, 0, 255 * (1-sec_f));
+    add_led_rgb(minute_next_led, 0, 0, 255 * sec_f);
 
 }
 
@@ -286,7 +286,7 @@ float offsetx, offsety;
 
 void plasma_animation() {
     uint8_t x, y;
-    uint8_t h, s, v;
+    uint8_t h, s;
     float val, xp, yp;
 
     for (y = 0; y < LED_GRID_HEIGHT; y ++) {
