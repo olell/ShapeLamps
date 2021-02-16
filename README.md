@@ -7,6 +7,7 @@
 - [x] Fancy Animations
 - [x] Sleeptimer
 - [x] Waketimer
+- [x] Wake alarm sounds
 - [x] Theoretically compatible with other hardware
 
 ## Renderings
